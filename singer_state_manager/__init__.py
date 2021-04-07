@@ -25,23 +25,12 @@ def main():
     text_lines = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
 
     for line in text_lines:
-        try:
-            msg = json.loads(line)
-        except json.decoder.JSONDecodeError:
-            LOGGER.error('Unable to parse:\n%s', line)
-            raise
+        with open(temp_state_file, mode='w') as temp:
+            temp.write(line)
+            temp.flush()
 
-        if 'type' not in msg:
-            raise Exception("Line is missing required key 'type': {}".format(line))
-        msg_type = msg['type']
-
-        if msg_type == 'STATE':
-            with open(temp_state_file, mode='w') as temp:
-                temp.write(line)
-                temp.flush()
-
-            # Atomically move valid state
-            os.rename(temp_state_file, state_file)
+        # Atomically move valid state
+        os.rename(temp_state_file, state_file)
 
         sys.stdout.write("{}\n".format(line))
         sys.stdout.flush()
