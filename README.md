@@ -4,7 +4,7 @@ Tool to update a Singer.io (https://www.singer.io/) pipeline's state ASAP after 
 
 Singer docs specify things should work like this (pseudocode):
 
-    tap --state state.json | target > state-log.txt
+    tap --state state.json | target >> state-log.txt
     tail -1 state-log.txt > state.json
 
 This works, but this does not "persist" the tap's progress until the entire run completes. For an initial sync of a slow
